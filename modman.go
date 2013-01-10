@@ -2,11 +2,16 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strconv"
 )
+
+var dirCurrent, _ = os.Getwd() // Directory that the binary is in
+var dirResources = filepath.Join(dirCurrent, "resources")
 
 func main() {
 	var choice int
@@ -41,6 +46,9 @@ func main() {
 		// Exit
 		os.Exit(0)
 	}
+
+	log.Println("Operation completed successfully!")
+	Pause(true) // End the program
 }
 
 func CheckSafety() bool {
@@ -107,7 +115,16 @@ func StartPatch() {
 }
 
 func RestoreBackups() {
-	// TODO
+	log.Println("Restoring data file backups...")
+	os.Remove(filepath.Join(dirResources, "data.dat"))
+	os.Remove(filepath.Join(dirResources, "resources.dat"))
+	_, err := CopyFile(filepath.Join(dirResources, "data.dat.bak"), filepath.Join(dirResources, "data.dat"))
+	_, err = CopyFile(filepath.Join(dirResources, "resource.dat.bak"), filepath.Join(dirResources, "resource.dat"))
+	if err != nil {
+		log.Println("There was an error restoring backups. Are you sure that")
+		log.Println("you have patched at least once?")
+		log.Fatal(err)
+	}
 }
 
 func UpdateBackups() {
@@ -119,4 +136,22 @@ func Clr() {
 	for i := 0; i < 32; i++ {
 		fmt.Println("")
 	}
+}
+
+func CopyFile(src, dest string) (written int64, err error) {
+	sf, err := os.Open(src)
+
+	if err != nil {
+		return 0, err
+	}
+
+	defer sf.Close()
+	df, err := os.Create(dest)
+
+	if err != nil {
+		return 0, err
+	}
+
+	defer df.Close()
+	return io.Copy(df, sf)
 }

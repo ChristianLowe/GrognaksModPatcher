@@ -9,6 +9,9 @@ import (
 )
 
 func main() {
+	var choice int
+
+	Clr()
 	fmt.Println("Welcome to Grognak's Mod Patcher!")
 
 	if !CheckSafety() {
@@ -16,12 +19,27 @@ func main() {
 	}
 
 	for {
-		choice := MainMenu()
-		if choice >= 0 && choice <= 3 {
+		choice = MainMenu()
+		if choice >= 1 && choice <= 4 {
 			break
 		} else {
 			Clr() // and then show the main menu again
 		}
+	}
+
+	switch choice {
+	case 1:
+		// Patch all mods
+		StartPatch()
+	case 2:
+		// Restore unmodded game
+		RestoreBackups()
+	case 3:
+		// Create updated backups
+		UpdateBackups()
+	case 4:
+		// Exit
+		os.Exit(0)
 	}
 }
 
@@ -41,7 +59,7 @@ func CheckSafety() bool {
 	}
 
 	if _, err := os.Stat(fileToCheck); os.IsNotExist(err) {
-		fmt.Println("Sorry, but there was an error. You need to install this binary in it's right place.")
+		fmt.Println("Sorry, but there was an error (#1):\n You need to install this binary in it's correct location.")
 		fmt.Println("Try consulting the included readme for more information.")
 		return false
 	}
@@ -57,7 +75,7 @@ func MainMenu() int {
 	fmt.Println("1) Patch all mods")
 	fmt.Println("2) Restore unmodded game")
 	fmt.Println("3) Create updated backups")
-	fmt.Println("0) Exit\n")
+	fmt.Println("4) Exit\n")
 	fmt.Print(">> ")
 
 	_, err := fmt.Scanln(&result)
@@ -76,7 +94,7 @@ func Pause(exiting bool) {
 	if exiting {
 		fmt.Println("\nPress Enter to exit...")
 		fmt.Scanln(&s)
-		os.Exit(1)
+		os.Exit(0)
 	} else {
 		fmt.Println("\nPress Enter to continue...")
 		fmt.Scanln(&s)
@@ -84,9 +102,21 @@ func Pause(exiting bool) {
 	}
 }
 
+func StartPatch() {
+	// TODO
+}
+
+func RestoreBackups() {
+	// TODO
+}
+
+func UpdateBackups() {
+	// TODO
+}
+
 func Clr() {
 	// TODO: Refine
-	for i := 0; i < 64; i++ {
+	for i := 0; i < 32; i++ {
 		fmt.Println("")
 	}
 }
